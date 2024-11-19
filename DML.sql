@@ -13,7 +13,7 @@ insert into post (id, title, contents, author_id) values(1, 'abc', '가나다라
 insert into author(id, name, email) values(5, 'min', 'fjf@naver.com');
 
 --테이블 제약조건 조회
-selecr * from information_schema.key_column_usage where table_name = 'post';
+select * from information_schema.key_column_usage where table_name = 'post';
 
 --ui이용해서 보드 조회: ui에서 우클릭, select lows --> 쿼리 새로 만들어줌
 --명령어 검색 구글 - mysql fk 정보 조회
