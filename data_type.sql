@@ -82,10 +82,10 @@ select * form post where created_time >= '2024-01-01' and created_time < '2025-0
 -- date_format활용
 select date_format(created_time, '%Y-%m-%d') from post;
 select date_format(created_time, '%H-%i-%s') from post;
-select id, title, comtents, date_format(created_time, '%Y-%m-%d') from post;
+select id, title, contents, date_format(created_time, '%Y-%m-%d') from post;
 --2024년만 조회해바라
 select * from post where date_format(created_time, '%Y') = '2024';
-select * from post where cast (date_format (created_time, '%Y') = '2024'as unsigned) = 2024;
+select * from post where cast (date_format (created_time, '%Y') as unsigned) = 2024;
 --오늘 현재 시간 (Y-M-D H-I-S)
 select now();
 
