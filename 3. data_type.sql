@@ -77,7 +77,7 @@ select * from post where case(date_format(created_time, %H)as unsigned) >10;
 --like패턴, 부등호 활용, date_format
 --like pattern
 select * from post where created_time like '2024-11&'; --문자열 조회
-select * form post where created_time >= '2024-01-01' and created_time < '2025-01-01';
+select * from post where created_time >= '2024-01-01' and created_time < '2025-01-01';
 
 -- date_format활용
 select date_format(created_time, '%Y-%m-%d') from post;
