@@ -49,16 +49,99 @@ select name, email from author union select title, contents from post;
 
 서브쿼리: select 문 안에 또다른 select문을 서브쿼리라 한다.
 --where 절 안에 서브쿼리
-
-
+--한 번이라도 글을 쓴 author 목록 조회
+select distinct a.* from author a inner join post p on a.id=p.author_id;
+select * from author where id in(select author_id from post);
 
 
 --select 절 안에 서브쿼리
+--author의 email과 author 별로 본인이 쓴 글의 개수를 출력
 
+select a.email, (select count(post_count) from author) from author a; --내가 했던것 (실패함)
+select count(*) from post where author_id =2; --이 짓 아이디 별로
 
-
+select a.email, (select count(*) from post where author_id=a.id) from author a; --정답
 
 --from 절 안에 서브쿼리
+select a.name from(select * from author) as a;
 
+-- 없어진 기록 찾기 
+-- 서브쿼리 이용
+SELECT * FROM ANIMAL_OUTS WHERE ANIMAL_ID NOT IN (SELECT ANIMAL_ID FROM ANIMAL_INS);
+
+-- JOIN 이용
+SELECT O.ANIMAL_ID, O.NAME FROM ANIAMAL_OUTS O LEFT JOIN ANIMAL_INS I 
+ON O.ANIMAL_ID=I.ANIMAL_ID 
+WHERE I.ANIMAL_ID IS NULL;
+
+
+
+SELECT O.ANIMAL_ID, O.NAME FROM ANIMAL_OUTS O LEFT JOIN ANIMAL_INS I
+ON I.ANIMAL_ID=O.ANIMAL_ID
+WHERE I.NAME IS NULL OR I.ANIMAL_ID IS NULL;
+
+
+--집계함수
+-- null은 count에서 제외
+select count(id) from author;
+select sum(price) from post;
+select avg(price) from post;
+select around(값, 1) from post;
+
+--group by : 그룹화된 데이터를 하나의 행(row)처럼 취급.
+-- author_id로 그룹핑 하였으면, 그 외의 캌ㄹ럼을 조회하는 것은 적철치 않음.
+group by author_id from post group by author_id;
+
+--group by와 집계함수
+--아래 쿼리에서 *은 그룹화된 데이터 내에서의 개수
+select author_id, count(*) from post group by author_id;
+
+--author_id로 그룹핑한 후 원고료 합계
+select author_id, count(*), sum(price) from post group by author_id;
+
+--author의 email과 author 별로 본인이 쓴 글의 개수를 출력
+select a.email, (select count(*) from post where author_id=a.id) from author a; --정답
+--join과 group by, 집계함수를 활용한 글의 개수 출력
+select a.email, count(p.author_id) as 개수 from author a left join post p on p.author_id=a.id group by a.email;
+select a.email, count(p.id) as 개수 from author a left join post p on p.author_id=a.id group by a.id; --강사님
+
+--where 와 group by
+-- 연도 별로 post 글의 개수 출력. 연도가 null 인 값은 제외
+select date_format(created_time, '%Y') as year , count(author_id) from post group by year; --test
+select date_format(created_time, '%Y') as year , count(author_id) from post where created_time is not null group by year; 
+select date_format(created_time, '%Y') as year , count(*) from post where created_time is not null group by year; 
+
+-- 자동차 종류 별 특정 옵션이 포함된 자동차 수 구하기
+SELECT CAR_TYPE, COUNT(OPTIONS) AS CARS FROM CAR_RENTAL_COMPANY_CAR 
+WHERE OPTIONS LIKE '%시트%'
+GROUP BY CAR_TYPE ORDER BY CAR_TYPE;
+
+-- 입양 시각 구하기(1)
+SELECT DATE_FORMAT(DATETIME, '%H') AS HOUR, COUNT(ANIMAL_ID) AS COUNT FROM ANIMAL_OUTS 
+WHERE  DATE_FORMAT(DATETIME, '%H') >= '09' AND  DATE_FORMAT(DATETIME, '%H') <'20' GROUP BY HOUR ORDER BY HOUR;
+
+--having : group by 를 통해 나온 집계값에 대한 조건
+--글을 2개 이상 쓴 사람에 대한 정보 조회
+select author_id from post group by author_id having count(*)>=2;
+select author_id, count(*) as count from post group by author_id having count>=2; -- 이것도 문제가 업따!
+
+	
+--동명 동물 수 찾기
+SELECT NAME, COUNT(NAME) AS COUNT FROM ANIMAL_INS GROUP BY NAME HAVING COUNT(NAME)>=2 ORDER BY NAME;
+SELECT NAME, COUNT(NAME) AS COUNT FROM ANIMAL_INS where name is not null GROUP BY NAME HAVING COUNT(NAME)>=2 ORDER BY NAME; -- 강사님
+
+--다중열 group by
+--post에서 작성자 별로 만든 제목의 개수를 출력하시오.
+select author_id, title, count(*) from post group by author_id, title;
+
+--재구매가 일어난 상품과 회원 리스트 구하기
+
+SELECT USER_ID, PRODUCT_ID from ONLINE_SALE WHERE COUNT (USER_I=GROUP_ID) GROUP USER_ID, BYPRODUCT_ID;
+
+SELECT USER_ID, PRODUCT_ID from ONLINE_SALE 
+WHERE COUNT (SELECT USER_ID FROM =GROUP_ID) GROUP USER_ID, BYPRODUCT_ID;
+
+SELECT USER_ID, PRODUCT_ID from ONLINE_SALE WHERE COUNT (USER_I=GROUP_ID) GROUP USER_ID, BYPRODUCT_ID HAVING COUNT(*)>=2 ORDER BY USER_ID, BYPRODUCT_ID DESC;
+--거의 답임,.,
 
 
