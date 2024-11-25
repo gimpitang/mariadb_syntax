@@ -29,3 +29,9 @@ git clone (repository주소);
 #maiadb 덤프파일 복원
 
 
+
+
+
+#계정 조회 및 생성 
+select * from mysql.user;
+create user 'choiyoungjae'@'localhost' identified by '4321';
